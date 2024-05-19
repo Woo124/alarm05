@@ -1,57 +1,94 @@
 package ui.navigation
 
+import alarm05.composeapp.generated.resources.Res
+import alarm05.composeapp.generated.resources.button_alarm_add
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import ui.popup.AlarmPopup
 
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AlarmView() {
-    val scroll = rememberScrollState()
+    val alarmList = mutableListOf<AlarmInfo>(
+        AlarmInfo(mutableStateOf("06:40"), mutableStateOf("목요일"), mutableStateOf(true)),
+        AlarmInfo(mutableStateOf("07:00"), mutableStateOf("금요일"), mutableStateOf(true)),
+    )
+
     Column(
-        modifier = Modifier.fillMaxWidth().verticalScroll(scroll).padding(20.dp),
+        modifier = Modifier.fillMaxWidth().padding(20.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val alarmList = mutableSetOf<AlarmInfo>()
+        val scope = rememberCoroutineScope()
+        val showPopup = mutableStateOf(false)
+        val alarmPopupIndex = mutableStateOf(-1)
 
-        val testAlarm = AlarmInfo(mutableStateOf("17:41"), mutableStateOf("목요일"), mutableStateOf(true))
-        val onClick = {
-
+        val alarmPlusPopupLauncher: () -> Unit = {
+            scope.launch {
+                showPopup.value = true
+            }
         }
 
-                /*
-        val openLampTypeSelector: () -> Unit = {
-            scope.launch {
-                dialogOpeningHaptic({
-                    haptic.performHapticFeedback(it)
-                }) {
-                    delay(200)
-                    showBottomSheet.value = true
-                    delay(100)
-                }
-            }
-        }*/
+        AlarmPopup(showPopup, alarmList, alarmPopupIndex)
 
-        alarmListComponent(onClick, testAlarm.time, testAlarm.day, testAlarm.checked)
-
-        /*
-        LazyColumn(
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.End
         ) {
-            for (alarm: alarmList) {
-                //alarmListComponent(alarm.time, alarm.day, alarm.checked)
+            Button(
+                onClick = {
+                    alarmPopupIndex.value = -1
+                    alarmPlusPopupLauncher()
+                },
+                modifier = Modifier.size(16.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                contentPadding = PaddingValues(0.dp),
+                elevation = ButtonDefaults.elevation(0.dp)
+            ) {
+                Image(
+                    painterResource(Res.drawable.button_alarm_add),
+                    modifier = Modifier.size(16.dp),
+                    contentDescription = null
+                )
             }
-        }*/
+        }
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            itemsIndexed(alarmList) { index, alarm ->
+                alarmListComponent(
+                    {
+                        alarmPopupIndex.value = index
+                        alarmPlusPopupLauncher()
+                    },
+                    alarm.time, alarm.day, alarm.checked
+                )
+            }
+        }
     }
 }
 
@@ -76,7 +113,7 @@ fun alarmListComponent(
         shape = RoundedCornerShape(15, 15, 15, 15),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(31, 31, 31)),
         elevation = ButtonDefaults.elevation(0.dp),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
