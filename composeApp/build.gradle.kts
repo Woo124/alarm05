@@ -44,7 +44,11 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            //implementation(libs.compose.navigation)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.json)
+            implementation(libs.ktor.client.serialization)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
