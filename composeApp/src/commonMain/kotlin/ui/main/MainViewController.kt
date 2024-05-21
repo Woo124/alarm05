@@ -85,9 +85,6 @@ fun MainAppView() {
                 }
             }
 
-            AnimatedVisibility(!showAlarmPage) {
-                SearchBox()
-            }
 
             AnimatedVisibility(showAlarmPage) {
                 AlarmView()
