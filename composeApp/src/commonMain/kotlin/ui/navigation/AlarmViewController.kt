@@ -38,7 +38,8 @@ fun AlarmView() {
     val alarmList = mutableListOf<AlarmInfo>(
         AlarmInfo(mutableStateOf("06:40"), mutableStateOf("목요일"), mutableStateOf(true)),
         AlarmInfo(mutableStateOf("07:00"), mutableStateOf("금요일"), mutableStateOf(true)),
-    )
+        AlarmInfo(mutableStateOf("09:00"), mutableStateOf("금요일"), mutableStateOf(true)),
+        )
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(20.dp),
