@@ -43,23 +43,27 @@ fun ChatPopup(
             reverseLayout = false // 역순으로 레이아웃 설정
         ) {
             itemsIndexed(chatHistory[chatPopupIndex.value] ?: emptyList()) { _, chatMessage ->
-
-                val backgroundColor = Color.Gray
+                val alignment = if (chatMessage.sender == "Me") Alignment.TopEnd else Alignment.TopStart
+                val backgroundColor = if (chatMessage.sender == "Me") Color.Gray else Color.LightGray
                 Box(
+                    contentAlignment = alignment,
                     modifier = Modifier
-
-                        .background(backgroundColor,shape= RoundedCornerShape(20.dp))
-                        .padding(8.dp),
-
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp) // 각 채팅 아이템 사이의 간격 추가
                 ) {
-                    Text(
-                        text = chatMessage.message,
-                        color = Color.Black,
-                        modifier = Modifier.padding(8.dp)
-                            .wrapContentHeight()
-                            .wrapContentWidth()
+                    Box(
+                        modifier = Modifier
+                            .background(backgroundColor, shape = RoundedCornerShape(20.dp))
+                            .padding(8.dp)
+                            .align(alignment)
+                    ) {
+                        Text(
+                            text = chatMessage.message,
+                            color = Color.Black,
+                            modifier = Modifier.padding(8.dp)
 
-                    )
+                        )
+                    }
                 }
             }
         }
