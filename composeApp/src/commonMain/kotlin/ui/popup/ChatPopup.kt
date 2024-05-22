@@ -4,12 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -20,7 +23,7 @@ import ui.theme.bounceClick
 
 @Composable
 fun ChatPopup(
-    chatHistory: MutableMap<String, MutableList<String>>,
+    chatHistory: MutableMap<String, MutableList<ChatMessage>>,
     chatPopupIndex: MutableState<String>
 ) {
     var message by rememberSaveable() { mutableStateOf("") }
@@ -37,10 +40,27 @@ fun ChatPopup(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 20.dp),
-            reverseLayout = true // 역순으로 레이아웃 설정
+            reverseLayout = false // 역순으로 레이아웃 설정
         ) {
-            items(chatHistory[chatPopupIndex.value] ?: emptyList()) { message ->
-                Text(message, color = Color.White)
+            itemsIndexed(chatHistory[chatPopupIndex.value] ?: emptyList()) { _, chatMessage ->
+
+                val backgroundColor = Color.Gray
+                Box(
+                    modifier = Modifier
+
+                        .background(backgroundColor,shape= RoundedCornerShape(20.dp))
+                        .padding(8.dp),
+
+                ) {
+                    Text(
+                        text = chatMessage.message,
+                        color = Color.Black,
+                        modifier = Modifier.padding(8.dp)
+                            .wrapContentHeight()
+                            .wrapContentWidth()
+
+                    )
+                }
             }
         }
 
@@ -63,7 +83,10 @@ fun ChatPopup(
             Button(
                 onClick = {
                     if (message.isNotEmpty()) {
-                        chatHistory[chatPopupIndex.value]?.add(message) // 메시지를 채팅 기록에 추가
+                        val newChatMessage = ChatMessage(sender = "Me", message = message)
+
+                        chatHistory[chatPopupIndex.value]?.add(newChatMessage) // 메시지를 채팅 기록에 추가
+                        println(newChatMessage.sender)
                         message = "" // 메시지 전송 후 텍스트 필드 비우기
                     }
                 },
@@ -74,3 +97,10 @@ fun ChatPopup(
         }
     }
 }
+
+
+data class ChatMessage(
+    val sender: String, // 발신자 이름 또는 ID
+    val message: String // 채팅 메시지
+)
+

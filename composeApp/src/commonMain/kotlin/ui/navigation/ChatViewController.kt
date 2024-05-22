@@ -1,9 +1,14 @@
 package ui.navigation
 
+import alarm05.composeapp.generated.resources.Res
+import alarm05.composeapp.generated.resources.alarm_24dp_fill1_wght700_grad_25_opsz24
+import alarm05.composeapp.generated.resources.button_alarm_add
+import alarm05.composeapp.generated.resources.undo_24dp_fill0_wght400_grad0_opsz24
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,20 +31,26 @@ import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import ui.main.SearchBox
+import ui.popup.ChatMessage
 import ui.popup.ChatPopup
 import ui.theme.ClickAnimation
 import ui.theme.bounceClick
 
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ChatView() {
     var showChatRoom by rememberSaveable { mutableStateOf(false) }
     val chatPopupIndex = mutableStateOf("")
 
-    val chatHistory = mutableMapOf<String, MutableList<String>>(
-        "Karina" to mutableListOf("Hello", "How are you?"),
-        "Winter" to mutableListOf("Hi", "I'm good, thanks!")
+    val chatHistory = mutableMapOf<String, MutableList<ChatMessage>>(
+        "Karina" to mutableListOf(ChatMessage("Me", "Hello"), ChatMessage("Karina", "How are you?")),
+        "Winter" to mutableListOf(ChatMessage("Winter","Good"),ChatMessage("Me","Nice")),
+
+
     )
 
     Column(
@@ -66,13 +77,15 @@ fun ChatView() {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 itemsIndexed(chatHistory.keys.toList()) { _, name ->
+                    chatPopupIndex.value = name
                     ChatListComponent(name) {
-                        chatPopupIndex.value = name
                         showChatRoom = true
+                        println("Clicked on: ${chatPopupIndex.value}")
                     }
                 }
             }
         }
+
 
         AnimatedVisibility(
             visible = showChatRoom,
@@ -84,18 +97,17 @@ fun ChatView() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "name",//chatPopupIndex.value,
+                        text = "${chatPopupIndex.value}",
                         color = Color.White,
                         fontSize = 24.sp,
                         modifier = Modifier.weight(1f)
                     )
-                    Text("<-",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White,
+                    Image(
+                        painter = painterResource(Res.drawable.undo_24dp_fill0_wght400_grad0_opsz24),
+                        contentDescription = null,
                         modifier = Modifier.bounceClick(
                             onClick = {
                                 showChatRoom = false
