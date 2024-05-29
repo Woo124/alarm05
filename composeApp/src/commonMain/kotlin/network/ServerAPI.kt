@@ -1,5 +1,8 @@
 package network
 
+import com.soywiz.korau.format.MP3
+import com.soywiz.korau.format.play
+import com.soywiz.korio.stream.AsyncStream
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.serialization.decodeFromString
@@ -20,9 +23,13 @@ suspend inline fun <reified T> sendGetRequest(url: String): T? {
     val client = HttpClient()
 
     var result: T? = null
+    println(client)
     try {
-        result = client.get<T>(encodeURL(serverInterface + url))
-        println(result)
+        println("Sending GET request $url")
+        println(serverInterface+url)
+        result = client.get<T>(serverInterface+url)
+        println("Received result: $result")
+
     } finally {
         client.close()
     }
@@ -32,15 +39,30 @@ suspend inline fun <reified T> sendGetRequest(url: String): T? {
 
 
 suspend fun sendChatMessage(to: String, message: String) {
+    println(serverInterface)
     val result = sendGetRequest<String>("/chat/$to/$message")
 }
 
 suspend fun getChatMessages(user: String): List<String> {
-    val result = sendGetRequest<String>("/chat.$user")
+    val result = sendGetRequest<String>("/chat/$user")
     return result?.let { Json.decodeFromString<List<String>>(it) } ?: listOf()
 }
 
 suspend fun getTTSSound(lang: String, text: String) {
-    val result = sendGetRequest<String>("$serverInterface/tts/$lang/$text")
-    // TODO: play sound
+    val result = sendGetRequest<AsyncStream>("/tts/$lang/$text")
+
+    println("========================")
+    println(result)
+
+    println("========================")
+
+    result?.let {
+        // MP3로 디코딩하고 재생
+        val audioData = MP3.decodeStream(it)?.toData()
+        audioData?.let {
+            val audioStream = it.toAsyncStream()
+            audioStream.playAndWait()
+        }
+    }
 }
+

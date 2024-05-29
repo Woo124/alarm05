@@ -44,11 +44,12 @@ import ui.theme.bounceClick
 @Composable
 fun ChatView() {
     var showChatRoom by rememberSaveable { mutableStateOf(false) }
-    val chatPopupIndex = mutableStateOf("")
+    val chatPopupIndex = rememberSaveable{mutableStateOf("")}
 
     val chatHistory = mutableMapOf<String, MutableList<ChatMessage>>(
         "Karina" to mutableListOf(ChatMessage("Me", "Hello"), ChatMessage("Karina", "How are you?")),
         "Winter" to mutableListOf(ChatMessage("Winter","Good"),ChatMessage("Me","Nice")),
+        "Test" to mutableListOf(ChatMessage("Test","test1"),ChatMessage("Me","Nice"))
 
 
     )
@@ -77,10 +78,11 @@ fun ChatView() {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 itemsIndexed(chatHistory.keys.toList()) { _, name ->
-                    chatPopupIndex.value = name
                     ChatListComponent(name) {
+                        chatPopupIndex.value = name
                         showChatRoom = true
-                        println("Clicked on: ${chatPopupIndex.value}")
+                        println(chatPopupIndex.value)
+
                     }
                 }
             }

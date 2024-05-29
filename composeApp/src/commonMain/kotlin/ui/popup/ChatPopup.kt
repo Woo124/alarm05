@@ -17,6 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import network.getTTSSound
+import network.sendChatMessage
+import network.sendGetRequest
 import ui.theme.ClickAnimation
 import ui.theme.bounceClick
 
@@ -90,8 +96,15 @@ fun ChatPopup(
                         val newChatMessage = ChatMessage(sender = "Me", message = message)
 
                         chatHistory[chatPopupIndex.value]?.add(newChatMessage) // 메시지를 채팅 기록에 추가
+                        val coroutineScope = CoroutineScope(Dispatchers.Main) // 또는 다른 디스패처를 선택합니다.
+                        coroutineScope.launch {
+                            sendChatMessage(newChatMessage.sender, message)
+                            getTTSSound("ko", message)
+                            message = "" // 메시지 전송 후 텍스트 필드 비우기
+                        }
                         println(newChatMessage.sender)
-                        message = "" // 메시지 전송 후 텍스트 필드 비우기
+
+
                     }
                 },
                  // 버튼을 텍스트 필드의 중앙에 맞춤

@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,11 +32,11 @@ import ui.theme.dialogOpeningHaptic
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AlarmView() {
-    val alarmList = mutableListOf<AlarmInfo>(
+    val alarmList = remember { mutableStateListOf(
         AlarmInfo(mutableStateOf("06:40"), mutableStateOf("목요일"), mutableStateOf(true)),
         AlarmInfo(mutableStateOf("07:00"), mutableStateOf("금요일"), mutableStateOf(true)),
-        AlarmInfo(mutableStateOf("09:00"), mutableStateOf("금요일"), mutableStateOf(true)),
-        )
+        AlarmInfo(mutableStateOf("09:00"), mutableStateOf("금요일"), mutableStateOf(true))
+    )}
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(20.dp),
@@ -49,8 +46,8 @@ fun AlarmView() {
         val haptic = LocalHapticFeedback.current
 
         val scope = rememberCoroutineScope()
-        val showPopup = mutableStateOf(false)
-        val alarmPopupIndex = mutableStateOf(-1)
+        val showPopup = remember { mutableStateOf(false) }
+        val alarmPopupIndex = remember { mutableStateOf(-1) }
 
         val alarmSettingPopupLauncher: () -> Unit = {
             scope.launch {
@@ -73,7 +70,7 @@ fun AlarmView() {
             Image(
                 painterResource(Res.drawable.button_alarm_add),
                 modifier = Modifier.size(16.dp).bounceClick(
-                    animation = ClickAnimation(1f, 0.8f),
+                    animation = ClickAnimation(1f, 0.90f),
                     onClick = {
                         alarmPopupIndex.value = -1
                         alarmSettingPopupLauncher()
@@ -89,11 +86,13 @@ fun AlarmView() {
         ) {
             itemsIndexed(alarmList) { index, alarm ->
                 AlarmListComponent(
-                    {
+                    onClick = {
                         alarmPopupIndex.value = index
                         alarmSettingPopupLauncher()
                     },
-                    alarm.time, alarm.day, alarm.checked
+                    setTime = alarm.time,
+                    dayInfo = alarm.day,
+                    isChecked = alarm.checked
                 )
             }
         }
@@ -118,7 +117,7 @@ fun AlarmListComponent(
     Row(
         modifier = Modifier
             .bounceClick(
-                animation = ClickAnimation(1f, 0.95f),
+                animation = ClickAnimation(1f, 0.98f),
                 onClick = onClick
             )
             .clip(RoundedCornerShape(15, 15, 15, 15))

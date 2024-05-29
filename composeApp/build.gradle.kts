@@ -14,9 +14,9 @@ kotlin {
             }
         }
     }
-    
+
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,34 +27,51 @@ kotlin {
             isStatic = true
         }
     }
-    
-    sourceSets {
-        val desktopMain by getting
-        
-        androidMain.dependencies {
-            implementation(libs.androidx.material3.android)
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.json)
-            implementation(libs.ktor.client.serialization)
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.client.json)
+                implementation(libs.ktor.client.serialization)
+                implementation("com.soywiz:korge:0.19.2")
+                implementation("com.soywiz:korge-core:0.12.0")
+                implementation("com.soywiz:korge-common:0.19.2")
+                // 코루틴 디펜던시 추가
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+            }
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
+
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.material3.android)
+                implementation(libs.compose.ui.tooling.preview)
+                implementation(libs.androidx.activity.compose)
+                // 안드로이드 코루틴 디펜던시 추가
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+            }
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
+
+            }
+            }
         }
     }
-}
+
 
 android {
     namespace = "com.alarm05.project"

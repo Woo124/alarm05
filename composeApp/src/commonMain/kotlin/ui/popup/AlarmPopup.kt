@@ -66,7 +66,8 @@ fun AlarmPopup(
                         onClick = {
                             val newAlarm = AlarmInfo(mutableStateOf(time), mutableStateOf(day), mutableStateOf(true))
                             if (alarmPopupIndex.value >= 0) {
-                                alarmList[alarmPopupIndex.value] = newAlarm
+                                alarmList[alarmPopupIndex.value]=newAlarm
+
                             } else {
                                 alarmList.add(newAlarm)
                             }
