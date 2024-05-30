@@ -45,8 +45,12 @@ kotlin {
                 implementation("com.soywiz:korge:0.19.2")
                 implementation("com.soywiz:korge-core:0.12.0")
                 implementation("com.soywiz:korge-common:0.19.2")
-                // 코루틴 디펜던시 추가
+                implementation("com.soywiz.korge:korge-core:5.1.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("io.ktor:ktor-client-core:1.6.4")
+                implementation("io.ktor:ktor-client-json:1.6.4")
+                implementation("io.ktor:ktor-client-serialization:1.6.4")
+
 
             }
         }
@@ -66,7 +70,6 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
-
             }
             }
         }
