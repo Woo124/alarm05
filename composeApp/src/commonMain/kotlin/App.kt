@@ -10,7 +10,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.main.MainAppView
 
 
-var userName = "이름 없는 유저"
+var userName = "NoNamed"
 
 
 @Composable
