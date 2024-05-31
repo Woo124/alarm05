@@ -31,49 +31,40 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.cio)
-                implementation(libs.ktor.client.json)
-                implementation(libs.ktor.client.serialization)
-                implementation("com.soywiz:korge:0.19.2")
-                implementation("com.soywiz:korge-core:0.12.0")
-                implementation("com.soywiz:korge-common:0.19.2")
-                implementation("com.soywiz.korge:korge-core:5.1.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                implementation("io.ktor:ktor-client-core:1.6.4")
-                implementation("io.ktor:ktor-client-json:1.6.4")
-                implementation("io.ktor:ktor-client-serialization:1.6.4")
-
-
+                api(libs.kotlin.stdlib)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material)
+                api(compose.material3)
+                api(compose.ui)
+                api(compose.components.resources)
+                api(compose.components.uiToolingPreview)
+                api(libs.ktor.client.core)
+                api(libs.ktor.client.cio)
+                api(libs.ktor.client.json)
+                api(libs.ktor.client.serialization)
+                api(libs.korge)
+                api(libs.korge.core)
+                runtimeOnly(libs.korge.foundation)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(libs.androidx.material3.android)
-                implementation(libs.compose.ui.tooling.preview)
-                implementation(libs.androidx.activity.compose)
-                // 안드로이드 코루틴 디펜던시 추가
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+                api(libs.androidx.material3.android)
+                api(libs.compose.ui.tooling.preview)
+                api(libs.androidx.activity.compose)
             }
         }
 
         val desktopMain by getting {
             dependencies {
-                implementation(compose.desktop.currentOs)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
-            }
+                api(compose.desktop.currentOs)
+                implementation("javazoom:jlayer:1.0.1")
             }
         }
     }
+}
 
 
 android {

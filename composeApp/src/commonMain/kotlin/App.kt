@@ -2,16 +2,15 @@ import alarm05.composeapp.generated.resources.Res
 import alarm05.composeapp.generated.resources.SUITE_Variable
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
-import androidx.compose.runtime.*
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
 import ui.main.MainAppView
+
+
+var userName = "이름 없는 유저"
 
 
 @Composable

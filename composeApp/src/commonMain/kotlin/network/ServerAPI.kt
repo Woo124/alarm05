@@ -1,40 +1,24 @@
 package network
 
-import com.soywiz.korau.format.MP3
-import com.soywiz.korau.format.play
-import com.soywiz.korio.stream.AsyncStream
-import com.soywiz.korio.stream.openAsync
+
+import device.playAudioFromByteArray
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-
-
 const val serverInterface = "http://localhost:8080"
-const val myName = "user1"
 
-
-fun encodeURL(url: String): String {
-    val allowedChars = ('a'..'z') + ('A'..'Z') + ('0'..'9') + "-_.~"
-    return url.map { if (it in allowedChars) it else "%${it.code.toString(16).uppercase()}" }.joinToString("")
-}
 
 suspend inline fun <reified T> sendGetRequest(url: String): T? {
-    val client = HttpClient {
-
-    }
+    val client = HttpClient()
 
     var result: T? = null
     try {
         println("Sending GET request $url")
         println(serverInterface + url)
-        result = client.get(serverInterface + url)
+        result = client.get<T>(serverInterface + url)
         println("Received result: $result")
     } catch (e: Exception) {
         println("Error: ${e.message}")
@@ -44,38 +28,24 @@ suspend inline fun <reified T> sendGetRequest(url: String): T? {
 
     return result
 }
-suspend fun sendChatMessage(to: String, message: String) {
-    println(serverInterface)
-    val result = sendGetRequest<String>("/chat/$to/$message")
+
+suspend fun getChatMessages(user: String): List<String> {
+    val result = sendGetRequest<String>("/chat/$user")
+    return result?.let { Json.decodeFromString<List<String>>(it) } ?: listOf()
 }
 
-
+suspend fun sendChatMessage(to: String, message: String) {
+    val result = sendGetRequest<String>("/chat/$to/$message")
+    println(result)
+}
 
 suspend fun getTTSSound(lang: String, text: String) {
-    val encodedText = encodeURL(text)
-    val byteArray = sendGetRequest<ByteArray>("/tts/$lang/$encodedText")
-
-    println("========================")
-    println(byteArray?.size)
-    println("========================")
-
-    if (byteArray != null) {
-        val asyncStream = byteArray.openAsync()
+    val byteArray = sendGetRequest<ByteArray>("/tts/$lang/$text")
+    if (byteArray is ByteArray) {
         println("========================")
-        println(asyncStream)
+        println(byteArray.size)
         println("========================")
 
-        // MP3로 디코딩
-        val audioData = MP3.decodeStream(asyncStream)?.toData()
-        println("========================")
-        println(audioData)
-        println("========================")
-        if (audioData != null) {
-            // 오디오 데이터를 재생
-
-                audioData.play()
-
-            }
-        }
+        playAudioFromByteArray(byteArray)
     }
-
+}

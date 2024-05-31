@@ -17,8 +17,10 @@ junit = "4.13.2"
 kotlin = "1.9.23"
 material3Android = "1.2.1"
 ktor = "1.6.7"
+korge = "5.4.0"
 
 [libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -37,6 +39,9 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+korge = { module = "com.soywiz.korge:korge", version.ref = "korge" }
+korge-core = { module = "com.soywiz.korge:korge-core", version.ref = "korge" }
+korge-foundation = { module = "com.soywiz.korge:korge-foundation", version.ref = "korge" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
